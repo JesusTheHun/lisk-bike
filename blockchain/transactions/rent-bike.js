@@ -22,8 +22,11 @@ class RentBikeTransaction extends TransferTransaction {
     prepare(store) {
         return Promise.all([
             super.prepare(store),
-            store.transaction.get({
-                id: this.asset.lastTransactionId,
+            store.transaction.cache({
+                id: this.asset.lastRentalTransactionId,
+            }),
+            store.transaction.cache({
+                id: this.asset.lastReturnTransactionId,
             })
         ]);
     }
@@ -33,11 +36,21 @@ class RentBikeTransaction extends TransferTransaction {
 
         const errors = [];
 
+        const lastRentTransaction = store.transaction.get(this.asset.lastRentTransactionId);
+        const lastReturnTransaction = store.transaction.get(this.asset.lastReturnTransactionId);
         const recipient = store.account.get(this.recipientId);
         const rentedBike = recipient.asset.bikes[this.asset.id];
 
         if (rentedBike === undefined) {
             errors.push(new TransactionError("Bike not found", this.id, "this.asset.id", this.asset.id, "An existing bike ID on recipient account"));
+        }
+
+        if (lastRentTransaction.id !== rentedBike.lastRentTransactionId) {
+            errors.push(new TransactionError('Invalid lastRentTransactionId for this bike', this.id, '.asset.id', this.asset.lastRentTransactionId, 'The last rent transaction id of the bike you want to rent'));
+        }
+
+        if (lastReturnTransaction.id !== rentedBike.lastReturnTransactionId) {
+            errors.push(new TransactionError('Invalid lastReturnTransactionId for this bike', this.id, '.asset.id', this.asset.lastReturnTransactionId, 'The last transaction id of the bike you want to rent'));
         }
 
         const deposit = new BigNum(rentedBike.deposit);
@@ -47,8 +60,9 @@ class RentBikeTransaction extends TransferTransaction {
         }
 
         rentedBike.rentedBy = this.senderId;
-        rentedBike.rentalStartDatetime = new Date().toUTCString();
+        rentedBike.rentalStartDatetime = this.timestamp;
         rentedBike.rentalEndDatetime = undefined;
+        rentedBike.lastRentTransactionId = this.id;
 
         store.account.set(this.recipientId, recipient);
 
@@ -59,25 +73,30 @@ class RentBikeTransaction extends TransferTransaction {
         super.undoAsset(store);
 
         const errors = [];
-        const lastTransaction = store.transaction.get(this.asset.lastTransactionId);
+
+        const lastRentTransaction = store.transaction.get(this.asset.lastRentTransactionId);
+        const lastReturnTransaction = store.transaction.get(this.asset.lastReturnTransactionId);
         const recipient = store.account.get(this.recipientId);
         const rentedBike = recipient.asset.bikes[this.asset.id];
 
-        if (lastTransaction.id != rentedBike.lastTransactionId) {
-
+        if (rentedBike === undefined) {
+            errors.push(new TransactionError("Bike not found", this.id, "this.asset.id", this.asset.id, "An existing bike ID on recipient account"));
         }
 
-        if (rentedBike ) {
-            errors.push(new TransactionError('Bike not found for removal', this.id, '.asset.id', this.asset.id, 'A valid existing bike Id string'));
+        if (lastRentTransaction.id !== rentedBike.lastRentTransactionId) {
+            errors.push(new TransactionError('Invalid lastRentTransactionId for this bike', this.id, '.asset.id', this.asset.lastRentTransactionId, 'The last rent transaction id of the bike you want to rent'));
         }
 
-        store.account.set(this.recipientId, {
-            ...recipient,
-            bikes: [
-                ...recipient.bikes.slice(0, newBikeIndex),
-                ...recipient.bikes.slice(newBikeIndex+1),
-            ],
-        });
+        if (lastReturnTransaction.id !== rentedBike.lastReturnTransactionId) {
+            errors.push(new TransactionError('Invalid lastReturnTransactionId for this bike', this.id, '.asset.id', this.asset.lastReturnTransactionId, 'The last transaction id of the bike you want to rent'));
+        }
+
+        rentedBike.rentedBy = lastRentTransaction.senderId;
+        rentedBike.rentalStartDatetime = lastRentTransaction.timestamp;
+        rentedBike.rentalEndDatetime = lastReturnTransaction.timestamp;
+        rentedBike.lastRentTransactionId = this.id;
+
+        store.account.set(this.recipientId, recipient);
 
         return errors;
     }
