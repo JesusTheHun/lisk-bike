@@ -20,7 +20,7 @@ class CreateBikeTransaction extends BaseTransaction {
 
         const validId = BikeValidator.id(this.id, this.asset.id);
         const validPricePerHour = BikeValidator.pricePerHour(this.id, this.asset.pricePerHour);
-        const validDeposit = BikeValidator.pricePerHour(this.id, this.asset.pricePerHour);
+        const validDeposit = BikeValidator.deposit(this.id, this.asset.pricePerHour);
 
         if (validId !== true) {
             errors.push(validId);
