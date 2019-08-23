@@ -11,9 +11,14 @@ class RentBikeTransaction extends TransferTransaction {
         const errors = [];
 
         const validId = BikeValidator.id(this.id, this.asset.id);
+        const validDeposit = BikeValidator.deposit(this.id, this.amount);
 
         if (validId !== true) {
             errors.push(validId);
+        }
+
+        if (validDeposit !== true) {
+            errors.push(validDeposit);
         }
 
         return errors;
@@ -36,8 +41,8 @@ class RentBikeTransaction extends TransferTransaction {
 
         const errors = [];
 
-        const lastRentTransaction = store.transaction.get(this.asset.lastRentTransactionId);
-        const lastReturnTransaction = store.transaction.get(this.asset.lastReturnTransactionId);
+        const lastRentTransaction = store.transaction.find(t => t.id === this.asset.lastRentTransactionId);
+        const lastReturnTransaction = store.transaction.find(t => t.id === this.asset.lastReturnTransactionId);
         const recipient = store.account.get(this.recipientId);
         const rentedBike = recipient.asset.bikes[this.asset.id];
 
