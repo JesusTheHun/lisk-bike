@@ -1,0 +1,26 @@
+require('dotenv').config();
+
+const { Application, genesisBlockDevnet, configDevnet} = require('lisk-sdk'); // require the lisk-sdk package
+const { FaucetTransaction } = require('lisk-transaction-faucet');
+const { CreateBikeTransaction, RentBikeTransaction } = require('./transactions');
+
+configDevnet.app.label = "Lisk.Bike";
+configDevnet.components.storage.host = process.env.DB_HOST;
+configDevnet.modules.http_api.access.public = true;
+
+const app = new Application(genesisBlockDevnet, configDevnet);
+
+if (process.env.ENV === 'DEVEL') {
+    app.registerTransaction(FaucetTransaction);
+}
+
+app.registerTransaction(CreateBikeTransaction);
+app.registerTransaction(RentBikeTransaction);
+
+app
+.run()
+.then(() => app.logger.info('App started...'))
+.catch(error => {
+    console.error('Faced error in application', error);
+    process.exit(1);
+});
