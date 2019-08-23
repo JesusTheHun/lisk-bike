@@ -118,4 +118,4 @@ class ReturnBikeTransaction extends BaseTransaction {
     }
 }
 
-module.exports = RentBikeTransaction;
+module.exports = ReturnBikeTransaction;
