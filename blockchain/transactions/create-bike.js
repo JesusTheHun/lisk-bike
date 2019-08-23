@@ -57,8 +57,8 @@ class CreateBikeTransaction extends BaseTransaction {
 
         newBike.id = this.asset.id;
         newBike.description = this.asset.description;
-        newBike.pricePerHour = this.asset.pricePerHour;
-        newBike.deposit = this.asset.deposit;
+        newBike.pricePerHour = this.asset.pricePerHour.toString();
+        newBike.deposit = this.asset.deposit.toString();
 
         recipient.asset.bikes[newBike.id] = newBike;
 
