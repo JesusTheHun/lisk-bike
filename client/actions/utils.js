@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import config from 'config/global';
+import env from 'react-native-config'
 
 export const buildActions = (namespace, actions) => {
   let typedObject = {};
@@ -22,7 +22,7 @@ export const buildActions = (namespace, actions) => {
 
               if (output instanceof Promise) {
                 return output.catch(err => {
-                  if (config.DEBUG) {
+                  if (env.DEBUG) {
                     console.error(
                       `Action ${type} was executed, the Promise failed with the error : ${err}`
                     );
@@ -33,7 +33,7 @@ export const buildActions = (namespace, actions) => {
 
               return output;
             } catch (err) {
-              if (config.DEBUG) {
+              if (env.DEBUG) {
                 console.error(
                   `Action ${type} was executed, resulting in error : ${err}`
                 );

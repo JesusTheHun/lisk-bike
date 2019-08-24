@@ -7,42 +7,16 @@ import {
     createSwitchNavigator,
 } from 'react-navigation';
 
-export const AppStack = createStackNavigator(
-    {
-        // AroundMe: {
-        //     screen: AroundMe,
-        //     navigationOptions: {
-        //         header: null,
-        //     },
-        // },
-    }
-);
+import {LoginScreen} from '../screens/Login';
+import BikeMap from '../screens/BikeMap';
 
-export const LoginStack = createStackNavigator({
-    // Login: {
-    //     screen: Login,
-    //     navigationOptions: {
-    //         header: null,
-    //     },
-    // },
-});
-
-export const RootStack = createSwitchNavigator(
+export const RootStack = createStackNavigator(
     {
-        AppStack: {
-            screen: AppStack,
+        BikeMap: {
+            screen: BikeMap,
             navigationOptions: {
                 header: null,
             },
         },
-        LoginStack: {
-            screen: LoginStack,
-            navigationOptions: {
-                header: null,
-            },
-        },
-    },
-    {
-        initialRouteName: 'LoginStack',
     }
 );

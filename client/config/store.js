@@ -6,7 +6,7 @@ import ReduxThunk from 'redux-thunk';
 import { persistStore, persistCombineReducers } from 'redux-persist';
 import reducers from '../reducers';
 
-import { GeolocationMiddleware } from 'middleware/geolocation';
+import { GeolocationMiddleware } from '../middleware/geolocation';
 
 const config = {
     key: 'primary',
@@ -16,9 +16,9 @@ const config = {
 const reducer = persistCombineReducers(config, reducers);
 
 const rootReducer = (state = {}, action) => {
-    if (action.type === AppStateActions.wipe.type) {
-        return {};
-    }
+    // if (action.type === AppStateActions.wipe.type) {
+    //     return {};
+    // }
 
     return reducer(state, action);
 };

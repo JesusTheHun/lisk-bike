@@ -1,4 +1,4 @@
-import {GeolocationActions} from "actions/GeolocationActions";
+import {GeolocationActions} from "../actions/GeolocationActions";
 
 export default (state = null, action) => {
     switch (action.type) {

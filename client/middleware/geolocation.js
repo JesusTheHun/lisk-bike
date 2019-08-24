@@ -1,6 +1,6 @@
 import { Platform, PermissionsAndroid } from 'react-native';
 
-import { GeolocationActions } from 'actions/GeolocationActions';
+import { GeolocationActions } from '../actions/GeolocationActions';
 
 export const GeolocationMiddleware = store => {
   const geoArgs = [

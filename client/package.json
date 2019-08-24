@@ -8,14 +8,26 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@liskhq/lisk-client": "^2.3.1",
+    "await-to-js": "^2.1.1",
+    "babel-runtime": "^6.26.0",
     "expo": "^34.0.1",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
-    "react-native-web": "^0.11.4"
+    "react-native-config": "^0.11.7",
+    "react-native-gesture-handler": "^1.4.1",
+    "react-native-maps-super-cluster": "^1.6.0",
+    "react-native-web": "^0.11.4",
+    "react-navigation": "^3.12.0",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.4",
+    "redux-persist": "^5.10.0",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
-    "babel-preset-expo": "^6.0.0"
+    "babel-preset-expo": "^6.0.0",
+    "react-native-maps": "^0.25.0"
   },
   "private": true
 }

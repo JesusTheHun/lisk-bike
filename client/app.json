@@ -1,7 +1,8 @@
 {
   "expo": {
     "name": "Lisk.Bike",
-    "slug": "lisk.bike",
+    "scheme": "liskbike",
+    "slug": "lisk-bike",
     "privacy": "public",
     "sdkVersion": "34.0.0",
     "platforms": [
