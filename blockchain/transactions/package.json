@@ -1,0 +1,10 @@
+{
+  "name": "lisk-bike-transactions",
+  "version": "1.0.0",
+  "description": "Lisk Bike PoC Transactions",
+  "main": "index.js",
+  "author": "Jonathan MASSUCHETTI",
+  "dependencies": {
+    "lisk-sdk": "^2.2.0"
+  }
+}

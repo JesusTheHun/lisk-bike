@@ -1,5 +1,5 @@
 const { BigNum } = require('lisk-sdk');
-const { TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
+const { BaseTransaction, TransactionError } = require('@liskhq/lisk-transactions');
 const { Bike, BikeValidator } = require('../bike.domain');
 
 class ReturnBikeTransaction extends BaseTransaction {

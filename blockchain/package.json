@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js | npx bunyan -o short"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +13,8 @@
     "dotenv": "^8.1.0",
     "lisk-sdk": "^2.2.0",
     "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "lisk-transaction-faucet": "^1.0.1"
   }
 }

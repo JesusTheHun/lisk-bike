@@ -4,7 +4,7 @@ const { Application, genesisBlockDevnet, configDevnet} = require('lisk-sdk'); //
 const { FaucetTransaction } = require('lisk-transaction-faucet');
 const { CreateBikeTransaction, RentBikeTransaction } = require('./transactions');
 
-configDevnet.app.label = "Lisk.Bike";
+configDevnet.app.label = "LiskBike";
 configDevnet.components.storage.host = process.env.DB_HOST;
 configDevnet.modules.http_api.access.public = true;
 
