@@ -2,16 +2,18 @@ const { BigNum } = require('lisk-sdk');
 const { TransactionError } = require('@liskhq/lisk-transactions');
 
 module.exports = {
-    Bike: {
-        id: undefined,
-        description: undefined,
-        rentedBy: undefined,
-        pricePerHour: undefined,
-        deposit: undefined,
-        lastRentTransactionId: undefined,
-        lastReturnTransactionId: undefined,
-        rentalStartDatetime: undefined,
-        rentalEndDatetime: undefined,
+    Bike: class {
+        constructor() {
+                this.id = undefined;
+                this.description = undefined;
+                this.rentedBy = undefined;
+                this.pricePerHour = undefined;
+                this.deposit = undefined;
+                this.lastRentTransactionId = undefined;
+                this.lastReturnTransactionId = undefined;
+                this.rentalStartDatetime = undefined;
+                this.rentalEndDatetime = undefined;
+        }
     },
     BikeValidator: {
         id: (transactionId, param) => (param || typeof param === 'string' || param.length > 0) ? true :
