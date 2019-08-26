@@ -1,7 +1,15 @@
 const { BigNum } = require('lisk-sdk');
 const { BaseTransaction, TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
-const { Bike } = require('../bike.domain');
+const { Bike, BikeValidator } = require('../bike.domain');
 
+/**
+ * Assets : {
+ *     id: string
+ *     description: string
+ *     pricePerHour: BigNum compatible string
+ *     deposit: BigNum compatible string
+ * }
+ */
 class CreateBikeTransaction extends BaseTransaction {
     static get TYPE () {
         return 1001;
@@ -49,7 +57,7 @@ class CreateBikeTransaction extends BaseTransaction {
 
         const recipient = store.account.get(this.recipientId);
 
-        if (recipient.bikes[this.asset.id] !== undefined) {
+        if (recipient.bikes && recipient.bikes[this.asset.id] !== undefined) {
             errors.push(new TransactionError("Bike with this Id already exist", this.id, 'this.asset.id', this.asset.id, "A non-registered Id"));
         }
 
@@ -59,6 +67,14 @@ class CreateBikeTransaction extends BaseTransaction {
         newBike.description = this.asset.description;
         newBike.pricePerHour = this.asset.pricePerHour.toString();
         newBike.deposit = this.asset.deposit.toString();
+
+        if (recipient.asset === undefined) {
+            recipient.asset = {};
+        }
+
+        if (recipient.asset.bikes === undefined) {
+            recipient.asset.bikes = {};
+        }
 
         recipient.asset.bikes[newBike.id] = newBike;
 
