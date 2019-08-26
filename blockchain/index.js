@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const { Application, genesisBlockDevnet, configDevnet} = require('lisk-sdk'); // require the lisk-sdk package
 const { FaucetTransaction } = require('lisk-transaction-faucet');
-const { CreateBikeTransaction, RentBikeTransaction } = require('./transactions');
+const { CreateBikeTransaction, RentBikeTransaction, ReturnBikeTransaction } = require('./transactions');
 
 configDevnet.app.label = "LiskBike";
 configDevnet.components.storage.host = process.env.DB_HOST;
@@ -16,6 +16,7 @@ if (process.env.ENV === 'DEVEL') {
 
 app.registerTransaction(CreateBikeTransaction);
 app.registerTransaction(RentBikeTransaction);
+app.registerTransaction(ReturnBikeTransaction);
 
 app
 .run()
