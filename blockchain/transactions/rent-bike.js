@@ -65,7 +65,11 @@ class RentBikeTransaction extends TransferTransaction {
             errors.push(new TransactionError("Bike not found", this.id, "this.asset.id", this.asset.id, "An existing bike ID on recipient account"));
         }
 
-        if (lastRentTransaction.id !== rentedBike.lastRentTransactionId) {
+        if (rentedBike.rentedBy !== undefined) {
+            errors.push(new TransactionError("Bike already rented", this.id, "this.asset.id", this.asset.id, "The ID of a currently non-rented bike"));
+        }
+
+        if (rentedBike.lastRentTransactionId && lastRentTransaction && lastRentTransaction.id !== rentedBike.lastRentTransactionId) {
             errors.push(new TransactionError('Invalid lastRentTransactionId for this bike', this.id, '.asset.id', this.asset.lastRentTransactionId, 'The last rent transaction id of the bike you want to rent'));
         }
 
