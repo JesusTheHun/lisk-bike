@@ -50,9 +50,9 @@ client.transactions.broadcast(tx.toJSON())
 
 .then(() => {
     console.info("Account fed.");
-    setTimeout(process.exit(0), 10*1000);
+    setTimeout(() => process.exit(0), 10*1000);
 })
 .catch(error => {
     console.error(error);
-    process.exit(0);
+    process.exit(1);
 });

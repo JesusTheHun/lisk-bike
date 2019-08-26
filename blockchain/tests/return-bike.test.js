@@ -9,7 +9,7 @@ const { EPOCH_TIME } = require('@liskhq/lisk-constants');
 const transactions = require('@liskhq/lisk-transactions');
 const { APIClient } = require('@liskhq/lisk-client');
 
-const { CreateBikeTransaction, RentBikeTransaction } = require('../transactions');
+const { ReturnBikeTransaction } = require('../transactions');
 
 const client = new APIClient(['http://localhost:4000']);
 
@@ -23,21 +23,26 @@ const account = JSON.parse(fs.readFileSync('./account.json'));
 
 console.debug("Account used : ", account.address);
 
-const tx =  new RentBikeTransaction({
+const bikeToReturn = Number(process.argv[2]).toString();
+const lastRentTransactionId = process.argv[3];
+const lastReturnTransactionId  = process.argv[4];
+
+const tx =  new ReturnBikeTransaction({
     senderPublicKey: account.publicKey,
     recipientId: account.address,
     timestamp: getTimestamp(),
-    amount: transactions.utils.convertLSKToBeddows("300"),
     asset: {
-        id: 1,
+        id: bikeToReturn,
+        lastRentTransactionId,
+        lastReturnTransactionId
     }
 });
 
 tx.sign(account.passphrase);
 
 client.transactions.broadcast(tx.toJSON())
-.then(data => {
-    console.info(`Bike rented`);
+.then(() => {
+    console.info("Bike returned through transaction :", tx.id);
     setTimeout(process.exit(0), 10*1000);
 })
 .catch(error => {

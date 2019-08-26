@@ -21,39 +21,29 @@ const getTimestamp = () => {
 
 const account = JSON.parse(fs.readFileSync('./account.json'));
 
-console.debug("Account used : ", account.address);
+console.debug("Account used :", account.address);
 
-const promises = [];
+const bikeToRent = Number(process.argv[2]).toString();
+const lastRentTransactionId = process.argv[3];
+const lastReturnTransactionId  = process.argv[4];
 
-for (let i = 0; i < 5; i++) {
-    const tx =  new CreateBikeTransaction({
-        senderPublicKey: account.publicKey,
-        recipientId: account.address,
-        timestamp: getTimestamp(),
-        asset: {
-            id: Number(i).toString(),
-            description: `Bike #${i}`,
-            pricePerHour: transactions.utils.convertLSKToBeddows("1"),
-            deposit: transactions.utils.convertLSKToBeddows("300"),
-        }
-    });
+const tx =  new RentBikeTransaction({
+    senderPublicKey: account.publicKey,
+    recipientId: account.address,
+    timestamp: getTimestamp(),
+    amount: transactions.utils.convertLSKToBeddows("300"),
+    asset: {
+        id: bikeToRent,
+        lastRentTransactionId,
+        lastReturnTransactionId,
+    }
+});
 
-    tx.sign(account.passphrase);
+tx.sign(account.passphrase);
 
-    let creationPromise = client.transactions.broadcast(tx.toJSON())
-    .then(() => {
-        console.info(`Bike #${i} created`);
-    })
-    .catch(error => {
-        console.error(error);
-        return Promise.reject(error)
-    });
-
-    promises.push(creationPromise);
-}
-
-Promise.all(promises).then(() => {
-    console.info("All bikes created.");
+client.transactions.broadcast(tx.toJSON())
+.then(data => {
+    console.info("Bike rented through transaction :", tx.id);
     setTimeout(() => process.exit(0), 10*1000);
 })
 .catch(error => {

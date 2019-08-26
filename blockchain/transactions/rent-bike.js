@@ -66,7 +66,7 @@ class RentBikeTransaction extends TransferTransaction {
         }
 
         if (rentedBike.rentedBy !== undefined) {
-            errors.push(new TransactionError("Bike already rented", this.id, "this.asset.id", this.asset.id, "The ID of a currently non-rented bike"));
+            errors.push(new TransactionError(`Bike already rented (tx ${rentedBike.lastRentTransactionId})`, this.id, "this.asset.id", this.asset.id, "The ID of a currently non-rented bike"));
         }
 
         if (rentedBike.lastRentTransactionId && lastRentTransaction && lastRentTransaction.id !== rentedBike.lastRentTransactionId) {
