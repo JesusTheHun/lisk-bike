@@ -2,6 +2,14 @@ const { BigNum } = require('lisk-sdk');
 const { TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
 const { Bike, BikeValidator } = require('../bike.domain');
 
+/**
+ * Assets : {
+ *     id: string
+ *     lastRentTransactionId: string, Transaction.id
+ *     lastReturnTransactionId: string, Transaction.id
+ * }
+ * Amount: BigNum string, bike deposit
+ */
 class RentBikeTransaction extends TransferTransaction {
     static get TYPE () {
         return 1002;
@@ -25,15 +33,22 @@ class RentBikeTransaction extends TransferTransaction {
     }
 
     prepare(store) {
-        return Promise.all([
-            super.prepare(store),
-            store.transaction.cache({
-                id: this.asset.lastRentalTransactionId,
-            }),
-            store.transaction.cache({
+
+        const promises = [super.prepare(store)];
+
+        if (this.asset.lastRentTransactionId) {
+            promises.push(store.transaction.cache({
+                id: this.asset.lastRentTransactionId,
+            }));
+        }
+
+        if (this.asset.lastReturnTransactionId) {
+            promises.push(store.transaction.cache({
                 id: this.asset.lastReturnTransactionId,
-            })
-        ]);
+            }));
+        }
+
+        return Promise.all(promises);
     }
 
     applyAsset(store) {
@@ -54,7 +69,7 @@ class RentBikeTransaction extends TransferTransaction {
             errors.push(new TransactionError('Invalid lastRentTransactionId for this bike', this.id, '.asset.id', this.asset.lastRentTransactionId, 'The last rent transaction id of the bike you want to rent'));
         }
 
-        if (lastReturnTransaction.id !== rentedBike.lastReturnTransactionId) {
+        if (rentedBike.lastReturnTransactionId && lastReturnTransaction && lastReturnTransaction.id !== rentedBike.lastReturnTransactionId) {
             errors.push(new TransactionError('Invalid lastReturnTransactionId for this bike', this.id, '.asset.id', this.asset.lastReturnTransactionId, 'The last transaction id of the bike you want to rent'));
         }
 
@@ -79,22 +94,11 @@ class RentBikeTransaction extends TransferTransaction {
 
         const errors = [];
 
-        const lastRentTransaction = store.transaction.get(this.asset.lastRentTransactionId);
-        const lastReturnTransaction = store.transaction.get(this.asset.lastReturnTransactionId);
+        const lastRentTransaction = store.transaction.find(t => t.id === this.asset.lastRentTransactionId) || {};
+        const lastReturnTransaction = store.transaction.find(t => t.id === this.asset.lastReturnTransactionId) || {};
+
         const recipient = store.account.get(this.recipientId);
         const rentedBike = recipient.asset.bikes[this.asset.id];
-
-        if (rentedBike === undefined) {
-            errors.push(new TransactionError("Bike not found", this.id, "this.asset.id", this.asset.id, "An existing bike ID on recipient account"));
-        }
-
-        if (lastRentTransaction.id !== rentedBike.lastRentTransactionId) {
-            errors.push(new TransactionError('Invalid lastRentTransactionId for this bike', this.id, '.asset.id', this.asset.lastRentTransactionId, 'The last rent transaction id of the bike you want to rent'));
-        }
-
-        if (lastReturnTransaction.id !== rentedBike.lastReturnTransactionId) {
-            errors.push(new TransactionError('Invalid lastReturnTransactionId for this bike', this.id, '.asset.id', this.asset.lastReturnTransactionId, 'The last transaction id of the bike you want to rent'));
-        }
 
         rentedBike.rentedBy = lastRentTransaction.senderId;
         rentedBike.rentalStartDatetime = lastRentTransaction.timestamp;
