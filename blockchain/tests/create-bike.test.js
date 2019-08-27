@@ -25,6 +25,29 @@ console.debug("Account used : ", account.address);
 
 const promises = [];
 
+const getBikeInfo = i => {
+  switch(i) {
+      case 1: {
+          return {
+              title: "Bike - children",
+              description: "Bike for children up to 1m20",
+          };
+      }
+      case 4: {
+          return {
+              title: "Bike - electric",
+              description: "Bike with electric assistance",
+          }
+      }
+      default: {
+          return {
+              title: "Bike",
+              description: "Adult sized bike",
+          }
+      }
+  }
+};
+
 for (let i = 0; i < 5; i++) {
     const tx =  new CreateBikeTransaction({
         senderPublicKey: account.publicKey,
@@ -32,7 +55,7 @@ for (let i = 0; i < 5; i++) {
         timestamp: getTimestamp(),
         asset: {
             id: Number(i).toString(),
-            description: `Bike #${i}`,
+            ... getBikeInfo(i),
             pricePerHour: transactions.utils.convertLSKToBeddows("1"),
             deposit: transactions.utils.convertLSKToBeddows("300"),
         }
