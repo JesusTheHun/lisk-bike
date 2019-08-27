@@ -21,7 +21,7 @@ class ReturnBikeTransaction extends BaseTransaction {
 
     prepare(store) {
 
-        const promises = [super.prepare(store)];
+        const promises = [super.prepare(store), store.account.cache([ { address: this.recipientId }])];
 
         if (this.asset.lastRentTransactionId) {
             promises.push(store.transaction.cache({
