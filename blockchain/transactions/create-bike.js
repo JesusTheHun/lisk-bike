@@ -10,6 +10,7 @@ const defaultLocation = {
 /**
  * Assets : {
  *     id: string
+ *     title: string,
  *     description: string
  *     pricePerHour: BigNum compatible string
  *     deposit: BigNum compatible string
@@ -69,6 +70,7 @@ class CreateBikeTransaction extends BaseTransaction {
         const newBike = new Bike();
 
         newBike.id = this.asset.id;
+        newBike.title = this.asset.title;
         newBike.description = this.asset.description;
         newBike.pricePerHour = this.asset.pricePerHour.toString();
         newBike.deposit = this.asset.deposit.toString();
