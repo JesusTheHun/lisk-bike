@@ -33,6 +33,23 @@ module.exports = {
             } catch(err) {
                 return new TransactionError('Missing or invalid "asset.deposit" defined on transaction', transactionId, '.asset.deposit', param, 'A valid BigNum string')
             }
+        },
+        cypheredLocation: (transactionId, param) => {
+            try {
+                return typeof param.latitude === 'string' && param.latitude.length > 0
+                && typeof param.latitude === 'string' && param.latitude.length > 0;
+            } catch(err) {
+                return new TransactionError('Missing or invalid "asset.latitude" or "asset.longitude" defined on transaction', transactionId, '.asset.latitude | longitude', param, 'A valid cyphered string')
+            }
+        },
+        location: (transactionId, param) => {
+            try {
+                new BigNum(param.latitude);
+                new BigNum(param.longitude);
+                return true;
+            } catch(err) {
+                return new TransactionError('Missing or invalid "asset.latitude" or "asset.longitude" defined on transaction', transactionId, '.asset.latitude | longitude', param, 'A valid BigNum string')
+            }
         }
     }
 };
