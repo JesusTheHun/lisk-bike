@@ -2,6 +2,11 @@ const { BigNum } = require('lisk-sdk');
 const { BaseTransaction, TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
 const { Bike, BikeValidator } = require('../bike.domain');
 
+const defaultLocation = {
+    latitude: new BigNum(48.8534).toString(),
+    longitude: new BigNum(2.3488).toString(),
+}; // Paris
+
 /**
  * Assets : {
  *     id: string
@@ -67,6 +72,7 @@ class CreateBikeTransaction extends BaseTransaction {
         newBike.description = this.asset.description;
         newBike.pricePerHour = this.asset.pricePerHour.toString();
         newBike.deposit = this.asset.deposit.toString();
+        newBike.location = defaultLocation;
 
         if (recipient.asset === undefined) {
             recipient.asset = {};
@@ -86,10 +92,6 @@ class CreateBikeTransaction extends BaseTransaction {
     undoAsset(store) {
         const errors = [];
         const recipient = store.account.get(this.recipientId);
-
-        if (recipient.asset.bikes[this.asset.id]) {
-            errors.push(new TransactionError('Bike not found for removal', this.id, '.asset.id', this.asset.id, 'A valid existing bike Id string'));
-        }
 
         delete recipient.asset.bikes[this.asset.id];
 
