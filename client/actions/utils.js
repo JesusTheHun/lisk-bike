@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import env from 'react-native-config'
+import { env } from '../config/env';
 
 export const buildActions = (namespace, actions) => {
   let typedObject = {};
