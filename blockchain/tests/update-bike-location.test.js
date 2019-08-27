@@ -7,25 +7,9 @@ const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography'
 const { Mnemonic } = require('@liskhq/lisk-passphrase');
 const { EPOCH_TIME } = require('@liskhq/lisk-constants');
 const transactions = require('@liskhq/lisk-transactions');
-
-const passphrase = Mnemonic.generateMnemonic();
-const { privateKey, publicKey } = getKeys(passphrase);
-const address = getAddressFromPublicKey(publicKey);
-
-const account = {
-    passphrase,
-    privateKey,
-    publicKey,
-    address,
-};
-
-fs.writeFileSync('./account.json', JSON.stringify(account));
-
-console.info("Company account created :", account);
-
-const { FaucetTransaction } = require('lisk-transaction-faucet');
-const { CreateBikeTransaction, RentBikeTransaction } = require('../transactions');
 const { APIClient } = require('@liskhq/lisk-client');
+
+const { UpdateBikeLocationTransaction } = require('../transactions');
 
 const client = new APIClient(['http://localhost:4000']);
 
@@ -35,21 +19,31 @@ const getTimestamp = () => {
     return  parseInt(inSeconds);
 };
 
-// Feed the account
+const renter = JSON.parse(fs.readFileSync('./renter.json'));
+const company = JSON.parse(fs.readFileSync('./company.json'));
 
-const tx =  new FaucetTransaction({
-    amount: transactions.utils.convertLSKToBeddows('10000'),
-    senderPublicKey: account.publicKey,
-    recipientId: account.address,
+console.debug("Account used : ", renter.address);
+
+const bikeToUpdate = Number(process.argv[2]).toString();
+
+const tx =  new UpdateBikeLocationTransaction({
+    senderPublicKey: renter.publicKey,
+    recipientId: company.address,
     timestamp: getTimestamp(),
+    asset: {
+        id: bikeToUpdate,
+        previousLatitude: new BigNum(48.8534).toString(),
+        previousLongitude: new BigNum(2.3488).toString(),
+        latitude: new BigNum(48.8535).toString(),
+        longitude: new BigNum(2.3489).toString(),
+    }
 });
 
-tx.sign(account.passphrase);
+tx.sign(renter.passphrase);
 
 client.transactions.broadcast(tx.toJSON())
-
 .then(() => {
-    console.info("Account fed.");
+    console.info("Bike location updated through transaction :", tx.id);
     setTimeout(() => process.exit(0), 10*1000);
 })
 .catch(error => {

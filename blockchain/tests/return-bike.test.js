@@ -19,17 +19,18 @@ const getTimestamp = () => {
     return  parseInt(inSeconds);
 };
 
-const account = JSON.parse(fs.readFileSync('./account.json'));
+const renter = JSON.parse(fs.readFileSync('./renter.json'));
+const company = JSON.parse(fs.readFileSync('./company.json'));
 
-console.debug("Account used : ", account.address);
+console.debug("Account used : ", renter.address);
 
 const bikeToReturn = Number(process.argv[2]).toString();
 const lastRentTransactionId = process.argv[3];
 const lastReturnTransactionId  = process.argv[4];
 
 const tx =  new ReturnBikeTransaction({
-    senderPublicKey: account.publicKey,
-    recipientId: account.address,
+    senderPublicKey: renter.publicKey,
+    recipientId: company.address,
     timestamp: getTimestamp(),
     asset: {
         id: bikeToReturn,
@@ -38,7 +39,7 @@ const tx =  new ReturnBikeTransaction({
     }
 });
 
-tx.sign(account.passphrase);
+tx.sign(renter.passphrase);
 
 client.transactions.broadcast(tx.toJSON())
 .then(() => {

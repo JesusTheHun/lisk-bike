@@ -9,7 +9,7 @@ const { EPOCH_TIME } = require('@liskhq/lisk-constants');
 const transactions = require('@liskhq/lisk-transactions');
 const { APIClient } = require('@liskhq/lisk-client');
 
-const { CreateBikeTransaction, RentBikeTransaction } = require('../transactions');
+const { CreateBikeTransaction } = require('../transactions');
 
 const client = new APIClient(['http://localhost:4000']);
 
@@ -19,7 +19,7 @@ const getTimestamp = () => {
     return  parseInt(inSeconds);
 };
 
-const account = JSON.parse(fs.readFileSync('./account.json'));
+const account = JSON.parse(fs.readFileSync('./company.json'));
 
 console.debug("Account used : ", account.address);
 
