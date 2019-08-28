@@ -1,14 +1,13 @@
 import React from 'react';
 import { Image } from 'react-native';
 import {
-    createDrawerNavigator,
-    createBottomTabNavigator,
     createStackNavigator,
-    createSwitchNavigator,
 } from 'react-navigation';
 
-import {LoginScreen} from '../screens/Login';
 import BikeMap from '../screens/BikeMap';
+import SignIn from '../screens/SignIn';
+import Rent from '../screens/Rent';
+import Account from '../screens/Account';
 
 export const RootStack = createStackNavigator(
     {
@@ -17,6 +16,15 @@ export const RootStack = createStackNavigator(
             navigationOptions: {
                 header: null,
             },
+        },
+        Account: {
+            screen: Account,
+        },
+        SignIn: {
+            screen: SignIn,
+        },
+        Rent: {
+            screen: Rent,
         },
     }
 );

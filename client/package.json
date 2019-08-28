@@ -8,12 +8,14 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo/vector-icons": "^10.0.5",
     "@liskhq/bignum": "^1.3.1",
     "@liskhq/lisk-client": "^2.3.1",
     "await-to-js": "^2.1.1",
     "babel-runtime": "^6.26.0",
     "expo": "^34.0.1",
     "geolocation-utils": "^1.2.2",
+    "moment": "^2.24.0",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",

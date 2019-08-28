@@ -11,6 +11,7 @@ import { GeolocationMiddleware } from '../middleware/geolocation';
 const config = {
     key: 'primary',
     storage,
+    whitelist: 'account',
 };
 
 const reducer = persistCombineReducers(config, reducers);

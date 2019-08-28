@@ -14,13 +14,13 @@ export const GeolocationMiddleware = store => {
   ];
 
   let isAllowed = false;
+
   if (Platform.OS === 'ios') {
     isAllowed = true;
   }
+
   if (Platform.OS === 'android' && Platform.Version >= 23) {
-    PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-    ).then(response => {
+    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(response => {
       if (response === PermissionsAndroid.RESULTS.GRANTED) {
         isAllowed = true;
         navigator.geolocation.watchPosition(...geoArgs);
@@ -29,10 +29,7 @@ export const GeolocationMiddleware = store => {
   }
 
   return next => action => {
-    if (
-      isAllowed &&
-      action.type === GeolocationActions.refreshGeolocation.type
-    ) {
+    if (isAllowed && action.type === GeolocationActions.refreshGeolocation.type) {
       navigator.geolocation.getCurrentPosition(...geoArgs.slice(0, -1));
     }
 

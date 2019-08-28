@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
-import {StyleSheet, Dimensions, Keyboard, StatusBar, View, Text, FlatList} from 'react-native';
+import {StyleSheet, Dimensions, Keyboard, StatusBar, View, Text, FlatList, TouchableHighlight, TouchableWithoutFeedback} from 'react-native';
 import { shape, arrayOf, number, string } from 'prop-types';
 
 import ClusteredMapView from 'react-native-maps-super-cluster';
 import { Marker, Callout } from 'react-native-maps';
 import {connect} from 'react-redux';
 import CenterPositionButton from '../components/CenterPositionButton';
-import {BlockchainActions} from '../actions/BlockchainActions';
+import {BikesActions} from '../actions/BikesActions';
+import BikeMapList from '../components/BikeMapList';
+import BikeMapBikeDetails from '../components/BikeMapBikeDetails';
 
 class BikeMap extends Component {
 
@@ -25,14 +27,15 @@ class BikeMap extends Component {
     constructor(props) {
         super(props);
 
-        this.props.dispatch(BlockchainActions.getBikes());
+        this.props.dispatch(BikesActions.getBikes());
 
         this.state = {
             clusterDetails: null,
+            selectedBike: null,
         }
     }
 
-    getUserLocation() {
+    getUserLocation = () => {
         return {
             latitude: this.props.geolocation ? this.props.geolocation.latitude : 48.8534, // Paris latitude
             longitude: this.props.geolocation ? this.props.geolocation.longitude : 2.3488, // Paris longitude
@@ -55,10 +58,6 @@ class BikeMap extends Component {
         );
     };
 
-    onMarkerPress(data) {
-
-    }
-
     renderCluster = (cluster, onPress) => {
         const pointCount = cluster.pointCount;
         const coordinate = cluster.coordinate;
@@ -79,7 +78,37 @@ class BikeMap extends Component {
     onClusterPress = (clusterId, children) => {
         this.setState({
             clusterDetails: children,
+            selectedBike: null,
         });
+    };
+
+    closeClusterDetails = () => {
+        this.setState({
+            clusterDetails: null,
+        });
+    };
+
+    onMarkerPress = (bike) => {
+        this.setState({
+            selectedBike: bike,
+        });
+        this.closeClusterDetails();
+    }
+
+    closeBikeDetails = () => {
+        this.setState({
+            selectedBike: null,
+        });
+        this.closeClusterDetails();
+    }
+
+    onRentPressed = bike => {
+        if (!this.props.account) {
+            this.props.navigation.navigate('SignIn', { bikeId: bike.id });
+            return;
+        }
+
+        this.props.navigation.navigate('Rent', { bikeId: bike.id });
     };
 
     render() {
@@ -94,9 +123,9 @@ class BikeMap extends Component {
                 }}
 
                 showsUserLocation={true}
-                showsMyLocationButton={true}
-                rotateEnabled={true}
-                showsCompass={true}
+                showsMyLocationButton={false}
+                rotateEnabled={false}
+                showsCompass={false}
                 edgePadding={{ top: 50, left: 50, bottom: 50, right: 50 }}
 
                 renderCluster={this.renderCluster}
@@ -107,27 +136,23 @@ class BikeMap extends Component {
             />
 
             { this.state.clusterDetails && (
-                <FlatList
-                    style={styles.clusterDetails}
-                    data={this.state.clusterDetails}
-                    renderItem={({item}) => {
-                        return <View style={styles.clusterDetailElementBox}>
-                            <Text style={styles.clusterDetailElementText}>{item.description}</Text>
-                        </View>
-                    }}
-                    ListHeaderComponent={() => {
-                        return <View style={styles.clusterDetailsHeaderBox}>
-                            <Text style={styles.clusterDetailsHeaderText}>Available bikes</Text>
-                        </View>
-                    }}
-                    ItemSeparatorComponent={() => {
-                        return <View style={styles.clusterDetailsElementSeparator}/>
-                    }}
+                <BikeMapList
+                    bikes={this.state.clusterDetails}
+                    onBikePress={this.onRentPressed}
+                    onClosePress={this.closeClusterDetails}
+                />
+            )}
+
+            { this.state.selectedBike && (
+                <BikeMapBikeDetails
+                    bike={this.state.selectedBike}
+                    onRentPress={this.onRentPressed}
+                    onClosePress={this.closeBikeDetails}
                 />
             )}
 
             {this.props.geolocation && (
-                <CenterPositionButton onPress={this.centerOnCurrentPosition} />
+                <CenterPositionButton onPress={this.centerOnCurrentPosition} style={styles.centerButton} />
             )}
         </View>
     }
@@ -140,56 +165,22 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     clusterBox: {
-        height: 20,
-        width: 20,
+        height: 30,
+        width: 30,
         borderRadius: 5,
         backgroundColor: '#005F0D',
     },
     clusterText: {
-        lineHeight: 20,
+        fontSize: 20,
+        lineHeight: 30,
         textAlign: 'center',
         color: 'white',
     },
-    clusterDetails: {
-        maxHeight: Dimensions.get('window').height / 2,
-        width: Dimensions.get('window').width - (2*20),
-        backgroundColor: 'white',
+    centerButton: {
         position: 'absolute',
-        left: 20,
-        bottom: 30,
-        borderRadius: 5,
-        padding: 10,
-
-        // https://ethercreative.github.io/react-native-shadow-generator/
-
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.32,
-        shadowRadius: 5.46,
-
-        elevation: 9,
-    },
-    clusterDetailsHeaderBox: {
-        paddingBottom: 10,
-    },
-    clusterDetailsHeaderText: {
-        fontSize: 18,
-    },
-    clusterDetailsElementSeparator: {
-        height: 1,
-        width: '100%',
-        backgroundColor: 'rgba(196, 196, 196, 0.3)',
-        margin: 5,
-    },
-    clusterDetailElementBox: {
-        paddingHorizontal: 5,
-    },
-    clusterDetailElementText: {
-
-    },
+        bottom: 50,
+        right: 50,
+    }
 });
 
 export default connect(store => ({
@@ -197,4 +188,5 @@ export default connect(store => ({
     bikes: Object.values(store.bikes).filter(bike => {
         return bike.rentedBy === undefined
     }),
+    account: store.account,
 }))(BikeMap);

@@ -8,7 +8,12 @@ const prod = {
     DEBUG: false,
 };
 
-const env = __DEV__ ? devel : prod;
+const shared = {
+    primaryColor: '#0056ED',
+    secondaryColor: 'transparent',
+};
+
+const env = Object.assign({}, shared, __DEV__ ? devel : prod);
 
 module.exports = {
     env

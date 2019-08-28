@@ -1,6 +1,6 @@
-/* eslint-disable */
-
+import * as lisk from '../lisk-client';
 import { env } from '../config/env';
+import moment from 'moment';
 
 export const buildActions = (namespace, actions) => {
   let typedObject = {};
@@ -68,3 +68,20 @@ export const buildActions = (namespace, actions) => {
 
   return typedObject;
 };
+
+export const dateToLiskEpochTimestamp = date => (
+    Math.floor(new Date(date).getTime() / 1000) - lisk.constants.EPOCH_TIME_SECONDS
+);
+
+export const liskEpochTimestampToDate = timestamp => (
+    new Date((timestamp + lisk.constants.EPOCH_TIME_SECONDS) * 1000)
+);
+
+export const formatTimestamp = timestamp => (
+    moment(liskEpochTimestampToDate(timestamp)).fromNow()
+);
+
+
+export const formatServerError = err => (
+    `${err}${err.errors && err.errors.map ? `:\n ${err.errors.map(({ message }) => message).join('\n ')}` : ''}`
+);
