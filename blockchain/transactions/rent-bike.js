@@ -64,6 +64,10 @@ class RentBikeTransaction extends TransferTransaction {
             errors.push(new TransactionError("Bike not found", this.id, "this.asset.id", this.asset.id, "An existing bike ID on recipient account"));
         }
 
+        if (recipient.asset.bikes.some(bike => bike.rentedBy === this.senderId)) {
+            errors.push(new TransactionError("You are already renting a bike", this.id));
+        }
+
         const rentedBike = recipient.asset.bikes[this.asset.id];
 
         if (rentedBike === undefined) {
