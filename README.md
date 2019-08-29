@@ -5,6 +5,9 @@
 You can try the mobile app on your device by following this link : https://expo.io/@jesusthehun/lisk-bike.
 Download the **Expo Client** app and scan the QR code.
 
+BEFORE YOU USE THE DEMO be aware that it will reveal your real location and store it into the demo blockchain.
+If you are in a private location, you might want to use a local blockchain instead.
+
 #### Bike Location Behavior
 
 The bike location is updated when you move with your phone.
