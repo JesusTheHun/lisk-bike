@@ -2,6 +2,15 @@ const { BigNum } = require('lisk-sdk');
 const { BaseTransaction, TransactionError } = require('@liskhq/lisk-transactions');
 const { Bike, BikeValidator } = require('../bike.domain');
 
+/**
+ * Assets : {
+ *     id: string
+ *     previousLatitude: string, Geoloc string
+ *     previousLongitude: string, Geoloc string
+ *     latitude: string, Geoloc string
+ *     longitude: string, Geoloc string
+ * }
+ */
 class UpdateBikeLocationTransaction extends BaseTransaction {
     static get TYPE () {
         return 1004;

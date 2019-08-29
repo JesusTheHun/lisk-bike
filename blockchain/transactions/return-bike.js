@@ -2,6 +2,13 @@ const { BigNum } = require('lisk-sdk');
 const { BaseTransaction, TransactionError } = require('@liskhq/lisk-transactions');
 const { Bike, BikeValidator } = require('../bike.domain');
 
+/**
+ * Assets : {
+ *     id: string
+ *     lastRentTransactionId: string, Transaction.id
+ *     lastReturnTransactionId: string, Transaction.id
+ * }
+ */
 class ReturnBikeTransaction extends BaseTransaction {
     static get TYPE () {
         return 1003;
