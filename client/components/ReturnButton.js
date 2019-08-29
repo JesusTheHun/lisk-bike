@@ -21,7 +21,7 @@ class ReturnButton extends PureComponent {
             buttonStyles.push(this.props.style);
         }
 
-        return <TouchableHighlight onPress={this.props.onPress} style={buttonStyles}>
+        return <TouchableHighlight { ... this.props } onPress={this.props.onPress} style={buttonStyles}>
             <Text style={styles.buttonText}>{this.props.label}</Text>
         </TouchableHighlight>
     }
@@ -29,22 +29,11 @@ class ReturnButton extends PureComponent {
 
 const styles = StyleSheet.create({
     buttonBox: {
-        backgroundColor: env.cancelColor,
+        backgroundColor: '#50A060',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 2,
-
         padding: 3,
-
-        shadowColor: "#000",
-        shadowOffset: {
-            width: -2,
-            height: 4,
-        },
-        shadowOpacity: 0.32,
-        shadowRadius: 2.46,
-
-        elevation: 4,
     },
     buttonText: {
         color: '#FFF',

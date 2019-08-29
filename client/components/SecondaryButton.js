@@ -21,7 +21,7 @@ class SecondaryButton extends PureComponent {
             buttonStyles.push(this.props.style);
         }
 
-        return <TouchableHighlight onPress={this.props.onPress} style={buttonStyles}>
+        return <TouchableHighlight { ... this.props } onPress={this.props.onPress} style={buttonStyles}>
             <Text style={styles.buttonText}>Change account</Text>
         </TouchableHighlight>
     }

@@ -81,7 +81,10 @@ export const formatTimestamp = timestamp => (
     moment(liskEpochTimestampToDate(timestamp)).fromNow()
 );
 
-
 export const formatServerError = err => (
     `${err}${err.errors && err.errors.map ? `:\n ${err.errors.map(({ message }) => message).join('\n ')}` : ''}`
 );
+
+export const humanReadableDistance = distance => distance > 1000 ?
+    `${Number(distance / 1000).toFixed(2)} km` :
+    `${distance} m`;

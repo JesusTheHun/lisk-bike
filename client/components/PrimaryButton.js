@@ -11,6 +11,7 @@ class PrimaryButton extends PureComponent {
         onPress: func.isRequired,
         label: string.isRequired,
         style: any,
+        ... TouchableHighlight.propTypes,
     };
 
     render() {
@@ -21,7 +22,7 @@ class PrimaryButton extends PureComponent {
             buttonStyles.push(this.props.style);
         }
 
-        return <TouchableHighlight onPress={this.props.onPress} style={buttonStyles}>
+        return <TouchableHighlight { ... this.props } onPress={this.props.onPress} style={buttonStyles} >
             <Text style={styles.buttonText}>{this.props.label}</Text>
         </TouchableHighlight>
     }

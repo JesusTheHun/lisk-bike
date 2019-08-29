@@ -11,6 +11,7 @@ import {BikesActions} from '../actions/BikesActions';
 import BikeMapList from '../components/BikeMapList';
 import BikeMapBikeDetails from '../components/BikeMapBikeDetails';
 import BikeRentCard from '../components/BikeRentCard';
+import {GeolocationActions} from '../actions/GeolocationActions';
 
 class BikeMap extends Component {
 
@@ -30,11 +31,48 @@ class BikeMap extends Component {
     constructor(props) {
         super(props);
 
-        this.props.dispatch(BikesActions.getBikes());
-
         this.state = {
             clusterDetails: null,
             selectedBike: null,
+        }
+    }
+
+    componentDidMount() {
+        const toast = Toast.show('Searching for bikes', {
+            duration: Toast.durations.LONG,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 100,
+        });
+
+        this.props.dispatch(BikesActions.getBikes()).finally(() => {
+            Toast.hide(toast);
+        });
+
+        this.props.dispatch(GeolocationActions.refreshGeolocation());
+
+        this.updateInterval = setInterval(() => {
+            this.forceUpdate();
+        }, 60*1000);
+    }
+
+    componentWillUnmount() {
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!this.props.account || !prevProps.account) return;
+
+        const bikePreviousRented = prevProps.bikes.find(bike => bike.rentedBy === prevProps.account.address);
+        const currentRentedBy = this.getRentedBike();
+
+        if (currentRentedBy && bikePreviousRented !== currentRentedBy) {
+            this.closeClusterDetails();
+            this.closeBikeDetails();
         }
     }
 
@@ -104,14 +142,14 @@ class BikeMap extends Component {
             selectedBike: bike,
         });
         this.closeClusterDetails();
-    }
+    };
 
     closeBikeDetails = () => {
         this.setState({
             selectedBike: null,
         });
         this.closeClusterDetails();
-    }
+    };
 
     onRentPress = bike => {
         if (!this.props.account) {
@@ -124,6 +162,7 @@ class BikeMap extends Component {
 
     onReturnPress = bike => {
         this.props.dispatch(BikesActions.returnBike(bike))
+
         .then(tx => {
             this.props.dispatch(BikesActions.setBike({
                 ...bike,
@@ -133,6 +172,7 @@ class BikeMap extends Component {
             }));
             this.props.navigation.navigate('RootStack');
         })
+
         .then(() => {
             Toast.show('The bike has been returned', {
                 duration: Toast.durations.SHORT,
@@ -143,6 +183,7 @@ class BikeMap extends Component {
                 delay: 100,
             });
         })
+
         .catch(response => {
             this.setState({
                 errorMessage: response.errors.map(error => error.message).join("\n"),
@@ -203,9 +244,6 @@ class BikeMap extends Component {
                 />
             )}
 
-            { this.props.geolocation && (
-                <CenterPositionButton onPress={this.centerOnCurrentPosition} style={styles.centerButton} />
-            )}
         </View>
     }
 }

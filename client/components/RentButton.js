@@ -21,7 +21,7 @@ class RentButton extends PureComponent {
             buttonStyles.push(this.props.style);
         }
 
-        return <TouchableHighlight onPress={this.props.onPress} style={buttonStyles}>
+        return <TouchableHighlight { ...this.props } onPress={this.props.onPress} style={buttonStyles} >
             <Text style={styles.buttonText}>{this.props.label}</Text>
         </TouchableHighlight>
     }
@@ -35,16 +35,6 @@ const styles = StyleSheet.create({
         borderRadius: 2,
 
         padding: 3,
-
-        shadowColor: "#000",
-        shadowOffset: {
-            width: -2,
-            height: 4,
-        },
-        shadowOpacity: 0.32,
-        shadowRadius: 2.46,
-
-        elevation: 4,
     },
     buttonText: {
         color: '#FFF',

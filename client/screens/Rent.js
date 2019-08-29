@@ -7,6 +7,7 @@ import {PrimaryButton} from '../components/PrimaryButton';
 import {SecondaryButton} from '../components/SecondaryButton';
 import lisk from '../lisk-client';
 import {BikesActions} from '../actions/BikesActions';
+import Toast from "react-native-root-toast";
 
 class Rent extends Component {
 
@@ -19,6 +20,7 @@ class Rent extends Component {
 
         this.state = {
             errorMessage: '',
+            rentButtonDisabled: false,
         }
     }
 
@@ -34,22 +36,44 @@ class Rent extends Component {
 
     onRentPress = () => {
 
+        this.setState({
+            rentButtonDisabled: true,
+        });
+
+        const toast = Toast.show('Sending request...', {
+            duration: Infinity,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+        });
+
         const bike = this.getBike();
 
         this.props.dispatch(BikesActions.rentBike(bike))
             .then(tx => {
+
+                this.setState({
+                    rentButtonDisabled: false,
+                });
+
                 this.props.dispatch(BikesActions.setBike({
                     ...bike,
                     rentedBy: this.props.account.address,
                     lastRentTransactionId: tx.id,
                     rentalStartDatetime: tx.timestamp,
                 }));
-                this.props.navigation.navigate('RootStack');
+
+                this.props.navigation.navigate('BikeMap');
             })
             .catch(response => {
                 this.setState({
                     errorMessage: response.errors.map(error => error.message).join("\n"),
                 });
+            })
+            .finally(() => {
+                Toast.hide(toast);
             })
     };
 
@@ -91,6 +115,7 @@ class Rent extends Component {
                     label={"Rent"}
                     onPress={this.onRentPress}
                     style={styles.buttonStyle}
+                    disabled={this.state.rentButtonDisabled}
                 />
                 <SecondaryButton
                     label={"Change account"}

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import {Dimensions, FlatList, StyleSheet, Text, TouchableHighlight, TouchableWithoutFeedback, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import { distanceTo } from 'geolocation-utils';
+import { isIphoneX } from 'react-native-iphone-x-helper'
 
 import {arrayOf, shape, func, string, number} from 'prop-types';
 import {RentButton} from './RentButton';
@@ -26,7 +27,7 @@ class BikeRentCard extends PureComponent {
 
         const { bike } = this.props;
         const rentDuration = moment().diff(liskEpochTimestampToDate(bike.rentalStartDatetime), 'minutes');
-        const cost = Math.ceil(rentDuration / 60) * lisk.transaction.utils.convertBeddowsToLSK(bike.pricePerHour);
+        const cost = Math.max(1, Math.ceil(rentDuration / 60) * lisk.transaction.utils.convertBeddowsToLSK(bike.pricePerHour));
 
         return <View
             style={styles.bikeRentCard}
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         position: 'absolute',
         left: 20,
-        bottom: 30,
+        top: isIphoneX() ? 50 : 30,
         borderRadius: 5,
         padding: 10,
 

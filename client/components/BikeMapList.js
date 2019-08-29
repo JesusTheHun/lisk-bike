@@ -5,6 +5,8 @@ import {Ionicons} from '@expo/vector-icons';
 import {arrayOf, shape, func} from 'prop-types';
 import {RentButton} from './RentButton';
 import {connect} from 'react-redux';
+import {humanReadableDistance} from '../actions/utils';
+import {distanceTo} from "geolocation-utils";
 
 class BikeMapList extends Component {
 
@@ -15,24 +17,31 @@ class BikeMapList extends Component {
     };
 
     render() {
+
+        const distance = distanceTo(this.props.geolocation, this.props.bikes[0].location);
+
         return <FlatList
             stickyHeaderIndices={[0]}
             data={this.props.bikes}
             keyExtractor={item => item.id}
             style={styles.clusterDetails}
+
             ListHeaderComponent={() => {
                 return <View style={styles.clusterDetailsHeaderBox}>
-                    <Text style={styles.clusterDetailsHeaderText}>Available bikes</Text>
+                    <Text style={styles.clusterDetailsHeaderText}>Available bikes - {humanReadableDistance(distance)}</Text>
                     <TouchableWithoutFeedback onPress={this.props.onClosePress}>
                         <Ionicons name="ios-close-circle" size={32} color="#C4C4C4" />
                     </TouchableWithoutFeedback>
                 </View>
             }}
+
             renderItem={({item}) => {
                 return <View style={styles.clusterDetailElementBox}>
                     <View style={styles.clusterDetailElementBoxTextColumn}>
                         <Text style={styles.clusterDetailElementTextTitle}>{item.title}</Text>
-                        <Text style={styles.clusterDetailElementTextDescription}>{item.description}</Text>
+                        <Text style={styles.clusterDetailElementTextDescription}>
+                            {item.description}
+                        </Text>
                     </View>
                     <View style={styles.clusterDetailElementBoxButtonColumn}>
                         <RentButton

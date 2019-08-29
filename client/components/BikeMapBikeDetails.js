@@ -6,6 +6,8 @@ import { distanceTo } from 'geolocation-utils';
 import {arrayOf, shape, func, string} from 'prop-types';
 import {RentButton} from './RentButton';
 import {connect} from 'react-redux';
+import BigNum from '@liskhq/bignum/bignum';
+import {humanReadableDistance} from '../actions/utils';
 
 class BikeMapBikeDetails extends PureComponent {
 
@@ -23,6 +25,7 @@ class BikeMapBikeDetails extends PureComponent {
     render() {
 
         const { bike } = this.props;
+        const distance = distanceTo(this.props.geolocation, bike.location);
 
         return <View
             style={styles.bikeDetails}
@@ -35,7 +38,7 @@ class BikeMapBikeDetails extends PureComponent {
             </View>
 
             <View style={styles.bikeDetailsContentBox}>
-                {/*<Text>{distanceTo(this.props.geolocatiob, bike.location)} m</Text>*/}
+                <Text>{ "Distance : " + humanReadableDistance(distance)}</Text>
                 <Text>{bike.description}</Text>
                 <RentButton
                     onPress={() => this.props.onRentPress(bike)}
