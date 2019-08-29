@@ -45,7 +45,7 @@ class BikeMapBikeDetails extends PureComponent {
             </View>
 
             <View style={styles.bikeDetailsContentBox}>
-                <Text>{ distance && ( ' Distance: ' + humanReadableDistance(distance)) }</Text>
+                <Text>{ distance && ( 'Distance: ' + humanReadableDistance(distance)) }</Text>
                 <Text>{bike.description}</Text>
                 <RentButton
                     onPress={() => this.props.onRentPress(bike)}
