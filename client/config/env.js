@@ -4,7 +4,7 @@ const devel = {
 };
 
 const prod = {
-    BLOCKCHAIN_NODE_URL: 'http://localhost:4001',
+    BLOCKCHAIN_NODE_URL: 'http://lisk-bike.dappit.fr:4000',
     DEBUG: false,
 };
 
