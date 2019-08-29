@@ -18,11 +18,11 @@ Since bike are not visible on the map if they are already rented, you won't see 
 For the first run we have to create the database before we start eh node app.
 
 ````bash
-$ cd blockchain
-$ docker-compose build
-$ docker-compose up psql
-$ docker exec -ti lisk-psql psql -h localhost -U lisk -d postgres -c "CREATE DATABASE lisk_dev OWNER lisk"
-$ docker-compose up nodejs
+cd blockchain
+docker-compose build
+docker-compose up -d psql
+docker exec -ti lisk-psql psql -h localhost -U lisk -d postgres -c "CREATE DATABASE lisk_dev OWNER lisk"
+docker-compose up -d nodejs
 ````
 
 For the other run you just have to use your classic `docker-compose up` and `docker-compose stop`
@@ -33,14 +33,14 @@ Create accounts. This will create two accounts, one for the company, one for ren
  The accounts will be store in json file in the script directory.
 
 ````bash
-$ cd node tests && node create-accounts.test.js 
+cd node tests && node create-accounts.test.js 
 ````
 
 Create bikes. This will create 5 bikes by default using the company account.
 The default bike location is in Paris, you can of course edit the script to change their default location.
 
 ````bash
-$ node create-bikes.test.js 
+node create-bikes.test.js 
 ````
 
 ### Mobile app
@@ -49,8 +49,8 @@ The app has been created with [Expo](https://expo.io/learn).
 The blockchain needs to be running.
 
 ```bash
-$ cd client && npm i
-$ npm start
+cd client && npm i
+npm start
 ```
 
 Scan the QR code with the **Expo Client** app and you are good to go !
