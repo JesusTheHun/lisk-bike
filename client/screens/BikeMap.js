@@ -38,12 +38,12 @@ class BikeMap extends Component {
 
     componentDidMount() {
         const toast = Toast.show('Searching for bikes', {
-            duration: Toast.durations.LONG,
+            duration: 99999,
             position: Toast.positions.BOTTOM,
             shadow: true,
             animation: true,
-            hideOnPress: true,
-            delay: 100,
+            hideOnPress: false,
+            delay: 700,
         });
 
         this.props.dispatch(BikesActions.getBikes()).finally(() => {

@@ -25,7 +25,7 @@ export const GeolocationMiddleware = store => {
         return Promise.reject();
     });
 
-    let geolocationSubcription;
+    let geolocationSubscription;
 
     return next => action => {
 
@@ -44,7 +44,7 @@ export const GeolocationMiddleware = store => {
 
             ask.then(() => {
 
-                geolocationSubcription = Location.watchPositionAsync({
+                geolocationSubscription = Location.watchPositionAsync({
                     accuracy: Location.Accuracy.Highest,
                     timeInterval: 10*1000,
                     distanceInterval: 0,
@@ -56,7 +56,7 @@ export const GeolocationMiddleware = store => {
         }
 
         if (action.type === BikesActions.returnBike.type) {
-            ask.then(() => geolocationSubcription.remove());
+            ask.then(() => geolocationSubscription.remove());
         }
 
         return next(action);
