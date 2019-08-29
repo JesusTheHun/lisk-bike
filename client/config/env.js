@@ -10,6 +10,7 @@ const prod = {
 
 const shared = {
     primaryColor: '#0056ED',
+    cancelColor: '#A21E16',
     secondaryColor: 'transparent',
 };
 

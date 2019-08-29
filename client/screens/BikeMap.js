@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Dimensions, Keyboard, StatusBar, View, Text, FlatList, TouchableHighlight, TouchableWithoutFeedback} from 'react-native';
 import { shape, arrayOf, number, string } from 'prop-types';
+import Toast from 'react-native-root-toast';
 
 import ClusteredMapView from 'react-native-maps-super-cluster';
 import { Marker, Callout } from 'react-native-maps';
@@ -9,6 +10,7 @@ import CenterPositionButton from '../components/CenterPositionButton';
 import {BikesActions} from '../actions/BikesActions';
 import BikeMapList from '../components/BikeMapList';
 import BikeMapBikeDetails from '../components/BikeMapBikeDetails';
+import BikeRentCard from '../components/BikeRentCard';
 
 class BikeMap extends Component {
 
@@ -21,6 +23,7 @@ class BikeMap extends Component {
         bikes: arrayOf(shape({
             id: string.isRequired,
             description: string,
+            rentedBy: string,
         })).isRequired,
     };
 
@@ -40,6 +43,14 @@ class BikeMap extends Component {
             latitude: this.props.geolocation ? this.props.geolocation.latitude : 48.8534, // Paris latitude
             longitude: this.props.geolocation ? this.props.geolocation.longitude : 2.3488, // Paris longitude
         };
+    };
+
+    getRentedBike = () => {
+        const { account } = this.props;
+
+        if (!account) return undefined;
+
+        return this.props.bikes.find(bike => bike.rentedBy === account.address);
     };
 
     centerOnCurrentPosition = () => {
@@ -102,7 +113,7 @@ class BikeMap extends Component {
         this.closeClusterDetails();
     }
 
-    onRentPressed = bike => {
+    onRentPress = bike => {
         if (!this.props.account) {
             this.props.navigation.navigate('SignIn', { bikeId: bike.id });
             return;
@@ -111,11 +122,45 @@ class BikeMap extends Component {
         this.props.navigation.navigate('Rent', { bikeId: bike.id });
     };
 
+    onReturnPress = bike => {
+        this.props.dispatch(BikesActions.returnBike(bike))
+        .then(tx => {
+            this.props.dispatch(BikesActions.setBike({
+                ...bike,
+                rentedBy: undefined,
+                lastReturnTransactionId: tx.id,
+                rentalEndDatetime: tx.timestamp,
+            }));
+            this.props.navigation.navigate('RootStack');
+        })
+        .then(() => {
+            Toast.show('The bike has been returned', {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.BOTTOM,
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 100,
+            });
+        })
+        .catch(response => {
+            this.setState({
+                errorMessage: response.errors.map(error => error.message).join("\n"),
+            });
+        })
+    };
+
     render() {
+
+        const rentedBike = this.getRentedBike();
+        const availableBikes = Object.values(this.props.bikes).filter(bike => {
+                return bike.rentedBy === undefined
+            });
+
         return <View style={styles.container}>
             <ClusteredMapView
                 ref={node => { this.clusteredMap = node }}
-                data={this.props.bikes}
+                data={availableBikes}
                 initialRegion={{
                     ...this.getUserLocation(),
                     latitudeDelta: 2,
@@ -138,7 +183,7 @@ class BikeMap extends Component {
             { this.state.clusterDetails && (
                 <BikeMapList
                     bikes={this.state.clusterDetails}
-                    onBikePress={this.onRentPressed}
+                    onBikePress={this.onRentPress}
                     onClosePress={this.closeClusterDetails}
                 />
             )}
@@ -146,12 +191,19 @@ class BikeMap extends Component {
             { this.state.selectedBike && (
                 <BikeMapBikeDetails
                     bike={this.state.selectedBike}
-                    onRentPress={this.onRentPressed}
+                    onRentPress={this.onRentPress}
                     onClosePress={this.closeBikeDetails}
                 />
             )}
 
-            {this.props.geolocation && (
+            { rentedBike && (
+                <BikeRentCard
+                    bike={rentedBike}
+                    onPress={this.onReturnPress}
+                />
+            )}
+
+            { this.props.geolocation && (
                 <CenterPositionButton onPress={this.centerOnCurrentPosition} style={styles.centerButton} />
             )}
         </View>
@@ -185,8 +237,6 @@ const styles = StyleSheet.create({
 
 export default connect(store => ({
     geolocation: store.geolocation,
-    bikes: Object.values(store.bikes).filter(bike => {
-        return bike.rentedBy === undefined
-    }),
+    bikes: Object.values(store.bikes),
     account: store.account,
 }))(BikeMap);

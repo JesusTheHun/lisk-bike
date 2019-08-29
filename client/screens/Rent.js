@@ -33,11 +33,16 @@ class Rent extends Component {
     };
 
     onRentPress = () => {
-        this.props.dispatch(BikesActions.rentBike(this.getBike()))
-            .then(() => {
+
+        const bike = this.getBike();
+
+        this.props.dispatch(BikesActions.rentBike(bike))
+            .then(tx => {
                 this.props.dispatch(BikesActions.setBike({
                     ...bike,
                     rentedBy: this.props.account.address,
+                    lastRentTransactionId: tx.id,
+                    rentalStartDatetime: tx.timestamp,
                 }));
                 this.props.navigation.navigate('RootStack');
             })

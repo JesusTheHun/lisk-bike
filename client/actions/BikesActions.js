@@ -49,7 +49,32 @@ export const BikesActions = buildActions('BikesActions', {
 
             tx.sign(getState().account.passphrase);
 
-            return client.transactions.broadcast(tx.toJSON()).catch(err => {
+            return client.transactions.broadcast(tx.toJSON())
+            .then(() => tx)
+            .catch(err => {
+                return Promise.reject(err);
+            });
+        }
+    },
+    returnBike(bike) {
+        return (dispatch, getState) => {
+
+            const tx =  new ReturnBikeTransaction({
+                asset: {
+                    id: bike.id,
+                    lastRentTransactionId: bike.lastRentTransactionId,
+                    lastReturnTransactionId: bike.lastReturnTransactionId,
+                },
+                senderPublicKey: getState().account.publicKey,
+                recipientId: bike.companyAccount.address,
+                timestamp: dateToLiskEpochTimestamp(new Date()),
+            });
+
+            tx.sign(getState().account.passphrase);
+
+            return client.transactions.broadcast(tx.toJSON())
+            .then(() => tx)
+            .catch(err => {
                 return Promise.reject(err);
             });
         }
