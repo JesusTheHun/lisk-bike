@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+    nodejs:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: nodejs
+        container_name: lisk-nodejs
+        restart: unless-stopped
+        env_file: .env
+        environment:
+            - HTTP_PORT=4000
+            - POSTGRES_USER=$POSTGRES_USER
+            - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+            - POSTGRES_DB=$POSTGRES_DB
+            - POSTGRES_HOST=psql
+            - VIRTUAL_HOST=lisk.docker
+        ports:
+            - "4000:4000"
+        volumes:
+            - .:/home/node/app
+            - node_modules:/home/node/app/node_modules
+        networks:
+            - lisk-network
+
+    psql:
+        image: postgres:10
+        container_name: lisk-psql
+        restart: unless-stopped
+        env_file: .env
+        environment:
+            - POSTGRES_USER=$POSTGRES_USER
+            - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+            - POSTGRES_DB=POSTGRES_DB
+        volumes:
+            - dbdata:/var/lib/postgresql/data
+        networks:
+            - lisk-network
+
+networks:
+    lisk-network:
+        driver: bridge
+
+volumes:
+    dbdata:
+    node_modules:
