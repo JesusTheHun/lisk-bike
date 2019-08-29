@@ -8,6 +8,9 @@ const { Mnemonic } = require('@liskhq/lisk-passphrase');
 const { EPOCH_TIME } = require('@liskhq/lisk-constants');
 const transactions = require('@liskhq/lisk-transactions');
 
+const { FaucetTransaction } = require('../transactions');
+const { APIClient } = require('@liskhq/lisk-client');
+
 let companyAccount;
 let renterAccount;
 
@@ -44,10 +47,6 @@ let renterAccount;
 
     console.info("Renter account created :", renterAccount);
 }
-
-const { FaucetTransaction } = require('lisk-transaction-faucet');
-const { CreateBikeTransaction, RentBikeTransaction } = require('../transactions');
-const { APIClient } = require('@liskhq/lisk-client');
 
 const client = new APIClient(['http://localhost:4000']);
 
