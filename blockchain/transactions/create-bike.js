@@ -68,13 +68,14 @@ class CreateBikeTransaction extends BaseTransaction {
         }
 
         const newBike = new Bike();
+        const location = BikeValidator.location(this.id, this.asset.location) === true ? this.asset.location : defaultLocation;
 
         newBike.id = this.asset.id;
         newBike.title = this.asset.title;
         newBike.description = this.asset.description;
         newBike.pricePerHour = this.asset.pricePerHour.toString();
         newBike.deposit = this.asset.deposit.toString();
-        newBike.location = defaultLocation;
+        newBike.location = this.asset.location || defaultLocation;
 
         if (recipient.asset === undefined) {
             recipient.asset = {};
