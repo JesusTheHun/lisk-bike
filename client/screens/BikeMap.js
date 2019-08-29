@@ -6,7 +6,6 @@ import Toast from 'react-native-root-toast';
 import ClusteredMapView from 'react-native-maps-super-cluster';
 import { Marker, Callout } from 'react-native-maps';
 import {connect} from 'react-redux';
-import CenterPositionButton from '../components/CenterPositionButton';
 import {BikesActions} from '../actions/BikesActions';
 import BikeMapList from '../components/BikeMapList';
 import BikeMapBikeDetails from '../components/BikeMapBikeDetails';
@@ -77,9 +76,9 @@ class BikeMap extends Component {
     }
 
     getUserLocation = () => {
-        return {
-            latitude: this.props.geolocation ? this.props.geolocation.latitude : 48.8534, // Paris latitude
-            longitude: this.props.geolocation ? this.props.geolocation.longitude : 2.3488, // Paris longitude
+        return this.props.geolocation ? this.props.geolocation : {
+            latitude: 48.8534, // Paris latitude
+            longitude: 2.3488, // Paris longitude
         };
     };
 

@@ -25,7 +25,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": false,
-    }
+      "supportsTablet": false
+    },
+    "description": "Lisk Bike PoC",
+    "githubUrl": "https://github.com/JesusTheHun/lisk-bike"
   }
 }

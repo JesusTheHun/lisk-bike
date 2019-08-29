@@ -78,5 +78,36 @@ export const BikesActions = buildActions('BikesActions', {
                 return Promise.reject(err);
             });
         }
+    },
+    updateRentedBikeLocation(coords) {
+        return (dispatch, getState) => {
+
+            const rentedBike = Object.values(getState().bikes).find(bike => bike.rentedBy === getState().account.address);
+
+            if (rentedBike === undefined) {
+                console.error("Update Bike Location trigger but no bike is currently rented");
+            }
+
+            const tx =  new UpdateBikeLocationTransaction({
+                asset: {
+                    id: rentedBike.id,
+                    previousLatitude: rentedBike.location.latitude,
+                    previousLongitude: rentedBike.location.longitude,
+                    latitude: Number(coords.latitude).toString(),
+                    longitude: Number(coords.longitude).toString(),
+                },
+                senderPublicKey: getState().account.publicKey,
+                recipientId: rentedBike.companyAccount.address,
+                timestamp: dateToLiskEpochTimestamp(new Date()),
+            });
+
+            tx.sign(getState().account.passphrase);
+
+            return client.transactions.broadcast(tx.toJSON())
+            .then(() => tx)
+            .catch(err => {
+                return Promise.reject(err);
+            });
+        }
     }
 });

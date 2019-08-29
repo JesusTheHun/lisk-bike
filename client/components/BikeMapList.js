@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Dimensions, FlatList, StyleSheet, Text, TouchableHighlight, TouchableWithoutFeedback, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 
-import {arrayOf, shape, func} from 'prop-types';
+import {arrayOf, shape, func, object, number} from 'prop-types';
 import {RentButton} from './RentButton';
 import {connect} from 'react-redux';
 import {humanReadableDistance} from '../actions/utils';
@@ -14,11 +14,22 @@ class BikeMapList extends Component {
         bikes: arrayOf(shape({})).isRequired,
         onBikePress: func.isRequired,
         onClosePress: func.isRequired,
+        account: object,
+        geolocation: shape({
+            latitude: number.isRequired,
+            longitude: number.isRequired,
+        }),
     };
 
     render() {
 
-        const distance = distanceTo(this.props.geolocation, this.props.bikes[0].location);
+        let distance;
+
+        try {
+            distance = distanceTo(this.props.geolocation, this.props.bikes[0].location);
+        } catch (e) {
+            // Meh.
+        }
 
         return <FlatList
             stickyHeaderIndices={[0]}
@@ -28,7 +39,7 @@ class BikeMapList extends Component {
 
             ListHeaderComponent={() => {
                 return <View style={styles.clusterDetailsHeaderBox}>
-                    <Text style={styles.clusterDetailsHeaderText}>Available bikes - {humanReadableDistance(distance)}</Text>
+                    <Text style={styles.clusterDetailsHeaderText}>Available bikes { distance && ( ' - ' + humanReadableDistance(distance))}</Text>
                     <TouchableWithoutFeedback onPress={this.props.onClosePress}>
                         <Ionicons name="ios-close-circle" size={32} color="#C4C4C4" />
                     </TouchableWithoutFeedback>

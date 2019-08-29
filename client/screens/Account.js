@@ -13,7 +13,7 @@ class Account extends Component {
         super(props);
 
         this.state = {
-            clipboardMessage: '',
+            clipboardMessage: 'Click the passphrase to copy it',
         }
     }
 
@@ -55,7 +55,7 @@ class Account extends Component {
 
             <View style={styles.propsBox}>
                 { props.map(prop => {
-                    return <View style={styles.propBox}>
+                    return <View style={styles.propBox} key={prop.label}>
                         <Text style={styles.propHeader}>{prop.label}</Text>
                         <TouchableOpacity onPress={() => this.onPropPress(prop.label)}>
                             <Text style={styles.prop}>{prop.value}</Text>

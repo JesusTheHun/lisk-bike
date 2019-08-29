@@ -63,6 +63,7 @@ class Rent extends Component {
                     rentedBy: this.props.account.address,
                     lastRentTransactionId: tx.id,
                     rentalStartDatetime: tx.timestamp,
+                    location: this.props.geolocation,
                 }));
 
                 this.props.navigation.navigate('BikeMap');
@@ -182,4 +183,5 @@ const styles = StyleSheet.create({
 export default connect(store => ({
     bikes: store.bikes,
     account: store.account,
+    geolocation: store.geolocation,
 }))(Rent);
