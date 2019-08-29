@@ -1,32 +1,9 @@
 
 
 import React, {PureComponent} from 'react';
-import {StyleSheet, Text, TouchableHighlight} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {env} from '../config/env';
 import { func, string, any } from 'prop-types';
-
-class PrimaryButton extends PureComponent {
-
-    static propTypes = {
-        onPress: func.isRequired,
-        label: string.isRequired,
-        style: any,
-        ... TouchableHighlight.propTypes,
-    };
-
-    render() {
-
-        const buttonStyles = [styles.buttonBox];
-
-        if (this.props.style) {
-            buttonStyles.push(this.props.style);
-        }
-
-        return <TouchableHighlight { ... this.props } onPress={this.props.onPress} style={buttonStyles} >
-            <Text style={styles.buttonText}>{this.props.label}</Text>
-        </TouchableHighlight>
-    }
-}
 
 const styles = StyleSheet.create({
     buttonBox: {
@@ -41,5 +18,28 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
     },
 });
+
+class PrimaryButton extends PureComponent {
+
+    static propTypes = {
+        onPress: func.isRequired,
+        label: string.isRequired,
+        style: any,
+        ... TouchableOpacity.propTypes,
+    };
+
+    render() {
+
+        const buttonStyles = [styles.buttonBox];
+
+        if (this.props.style) {
+            buttonStyles.push(this.props.style);
+        }
+
+        return <TouchableOpacity { ... this.props } onPress={this.props.onPress} style={buttonStyles} >
+            <Text style={styles.buttonText}>{this.props.label}</Text>
+        </TouchableOpacity>
+    }
+}
 
 export { PrimaryButton }

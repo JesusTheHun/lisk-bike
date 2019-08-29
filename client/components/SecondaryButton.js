@@ -1,7 +1,7 @@
 
 
 import React, {PureComponent} from 'react';
-import {StyleSheet, Text, TouchableHighlight} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {env} from '../config/env';
 import { func, string, any } from 'prop-types';
 
@@ -11,6 +11,7 @@ class SecondaryButton extends PureComponent {
         onPress: func.isRequired,
         label: string.isRequired,
         style: any,
+        ... TouchableOpacity.propTypes,
     };
 
     render() {
@@ -21,9 +22,9 @@ class SecondaryButton extends PureComponent {
             buttonStyles.push(this.props.style);
         }
 
-        return <TouchableHighlight { ... this.props } onPress={this.props.onPress} style={buttonStyles}>
+        return <TouchableOpacity { ... this.props } onPress={this.props.onPress} style={buttonStyles}>
             <Text style={styles.buttonText}>Change account</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
     }
 }
 
