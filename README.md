@@ -36,11 +36,11 @@ Create accounts. This will create two accounts, one for the company, one for ren
 cd node tests && node create-accounts.test.js 
 ````
 
-Create bikes. This will create 5 bikes by default using the company account.
+Create bikes. This will create <ARG> bikes by default using the company account.
 The default bike location is in Paris, you can of course edit the script to change their default location.
 
 ````bash
-node create-bikes.test.js 
+node create-bikes.test.js ARG
 ````
 
 ### Mobile app

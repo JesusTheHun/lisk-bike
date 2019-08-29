@@ -1,6 +1,7 @@
 const util = require('util');
 const fs = require('fs');
 const { to } = require('await-to-js');
+require('dotenv').config({ path : '../.env' });
 
 const { BigNum } = require('lisk-sdk');
 const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography');
@@ -11,7 +12,7 @@ const { APIClient } = require('@liskhq/lisk-client');
 
 const { CreateBikeTransaction } = require('../transactions');
 
-const client = new APIClient(['http://localhost:4000']);
+const client = new APIClient([`http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}`]);
 
 const getTimestamp = () => {
     const millisSinceEpoc = Date.now() - Date.parse(EPOCH_TIME);
@@ -48,7 +49,13 @@ const getBikeInfo = i => {
   }
 };
 
-for (let i = 0; i < 5; i++) {
+const numberOfBikeToCreate = Number(process.argv[2]);
+
+const startLatitude = new BigNum(48.8535);
+const startLongitude = new BigNum(2.3489);
+const squareSize = Math.ceil(Math.sqrt(numberOfBikeToCreate));
+
+for (let i = 0; i < numberOfBikeToCreate; i++) {
     const tx =  new CreateBikeTransaction({
         senderPublicKey: account.publicKey,
         recipientId: account.address,
@@ -58,6 +65,8 @@ for (let i = 0; i < 5; i++) {
             ... getBikeInfo(i),
             pricePerHour: transactions.utils.convertLSKToBeddows("1"),
             deposit: transactions.utils.convertLSKToBeddows("300"),
+            latitude: startLatitude.add( (i % squareSize) * 0.002).toString(),
+            longitude: startLongitude.add( (Math.ceil(i / squareSize)) * 0.002).toString(),
         }
     });
 

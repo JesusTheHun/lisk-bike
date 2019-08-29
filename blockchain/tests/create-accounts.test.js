@@ -2,6 +2,8 @@ const util = require('util');
 const fs = require('fs');
 const { to } = require('await-to-js');
 
+require('dotenv').config({ path : '../.env' });
+
 const { BigNum } = require('lisk-sdk');
 const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography');
 const { Mnemonic } = require('@liskhq/lisk-passphrase');
@@ -48,7 +50,7 @@ let renterAccount;
     console.info("Renter account created :", renterAccount);
 }
 
-const client = new APIClient(['http://localhost:4000']);
+const client = new APIClient([`http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}`]);
 
 const getTimestamp = () => {
     const millisSinceEpoc = Date.now() - Date.parse(EPOCH_TIME);

@@ -1,6 +1,7 @@
 const util = require('util');
 const fs = require('fs');
 const { to } = require('await-to-js');
+require('dotenv').config({ path : '../.env' });
 
 const { BigNum } = require('lisk-sdk');
 const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography');
@@ -11,7 +12,7 @@ const { APIClient } = require('@liskhq/lisk-client');
 
 const { UpdateBikeLocationTransaction } = require('../transactions');
 
-const client = new APIClient(['http://localhost:4000']);
+const client = new APIClient([`http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}`]);
 
 const getTimestamp = () => {
     const millisSinceEpoc = Date.now() - Date.parse(EPOCH_TIME);
