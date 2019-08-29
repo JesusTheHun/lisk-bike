@@ -25,7 +25,7 @@ docker exec -ti lisk-psql psql -h localhost -U lisk -d postgres -c "CREATE DATAB
 docker-compose up -d nodejs
 ````
 
-For the other run you just have to use your classic `docker-compose up` and `docker-compose stop`
+For the other run you just have to use your classic `docker-compose start` and `docker-compose stop`
 
 ### Create some data
 
