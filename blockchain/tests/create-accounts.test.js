@@ -58,7 +58,7 @@ const getTimestamp = () => {
 
 // Feed the account
 
-const tx1 =  new transactions.TransferTransaction({
+const tx1 =  new FaucetTransaction({
     type: 777,
     fee: '0',
     amount: transactions.utils.convertLSKToBeddows('10000'),
