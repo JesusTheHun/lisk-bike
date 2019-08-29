@@ -25,7 +25,14 @@ class BikeMapBikeDetails extends PureComponent {
     render() {
 
         const { bike } = this.props;
-        const distance = distanceTo(this.props.geolocation, bike.location);
+
+        let distance;
+
+        try {
+            distance = distanceTo(this.props.geolocation, bike.location);
+        } catch (e) {
+            // Meh.
+        }
 
         return <View
             style={styles.bikeDetails}
@@ -38,7 +45,7 @@ class BikeMapBikeDetails extends PureComponent {
             </View>
 
             <View style={styles.bikeDetailsContentBox}>
-                <Text>{ "Distance : " + humanReadableDistance(distance)}</Text>
+                <Text>{ distance && ( ' Distance: ' + humanReadableDistance(distance)) }</Text>
                 <Text>{bike.description}</Text>
                 <RentButton
                     onPress={() => this.props.onRentPress(bike)}
