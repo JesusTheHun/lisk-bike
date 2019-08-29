@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 
 services:
     nodejs:
@@ -23,6 +23,7 @@ services:
             - node_modules:/home/node/app/node_modules
         networks:
             - lisk-network
+        command: ./wait-for.sh psql:5432 -- node index.js | npx bunyan -o short
 
     psql:
         image: postgres:10
@@ -35,6 +36,7 @@ services:
             - POSTGRES_DB=POSTGRES_DB
         volumes:
             - dbdata:/var/lib/postgresql/data
+            - ./wait-for.sh:/opt/scripts/wait-for.sh
         networks:
             - lisk-network
 
