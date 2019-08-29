@@ -36,7 +36,7 @@ Create accounts. This will create two accounts, one for the company, one for ren
  The accounts will be store in json file in the script directory.
 
 ````bash
-cd node tests && node create-accounts.test.js 
+cd tests && node create-accounts.test.js 
 ````
 
 Create bikes. This will create <ARG> bikes by default using the company account.
