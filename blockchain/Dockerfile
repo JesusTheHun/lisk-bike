@@ -14,4 +14,4 @@ COPY --chown=node:node . .
 
 EXPOSE ${HTTP_PORT}
 
-CMD [ "node", "index.js" ]
+CMD [ "npm", "start" ]

@@ -23,6 +23,8 @@ services:
             - node_modules:/home/node/app/node_modules
         networks:
             - lisk-network
+        depends_on:
+          - psql
 
     psql:
         image: postgres:10
@@ -35,7 +37,6 @@ services:
             - POSTGRES_DB=POSTGRES_DB
         volumes:
             - dbdata:/var/lib/postgresql/data
-            - ./wait-for.sh:/opt/scripts/wait-for.sh
         networks:
             - lisk-network
 
