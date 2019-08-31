@@ -18,7 +18,7 @@ Since bike are not visible on the map if they are already rented, you won't see 
 
 ### Blockchain using Docker
 
-For the first run we have to create the database before we start eh node app.
+For the first run we have to create the database before we start the node app.
 
 ````bash
 cd blockchain
@@ -28,18 +28,18 @@ docker exec -ti lisk-psql psql -h localhost -U lisk -d postgres -c "CREATE DATAB
 docker-compose up -d nodejs
 ````
 
-For the other run you just have to use your classic `docker-compose start` and `docker-compose stop`
+Next times you can use `docker-compose start` and `docker-compose stop`
 
 ### Create some data
 
-Create accounts. This will create two accounts, one for the company, one for rent.
- The accounts will be store in json file in the script directory.
+We will create two accounts, one for the company, one for rent.
+The accounts will be store in json file in the script directory.
 
 ````bash
 cd tests && node create-accounts.test.js 
 ````
 
-Create bikes. This will create <ARG> bikes by default using the company account.
+We will now create <ARG> bikes using the company account.
 The default bike location is in Paris, you can of course edit the script to change their default location.
 
 ````bash
