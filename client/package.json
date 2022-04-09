@@ -16,7 +16,7 @@
     "expo": "^34.0.1",
     "expo-location": "^6.0.0",
     "geolocation-utils": "^1.2.2",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
